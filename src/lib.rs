@@ -177,8 +177,8 @@ pub mod __private;
 #[macro_use]
 mod careful;
 
-#[macro_use]
 mod place;
+use place::make_place;
 
 mod error;
 mod ignore;

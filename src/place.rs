@@ -22,7 +22,6 @@
 /// #
 /// # make_place!(Place);
 /// ```
-#[macro_export]
 macro_rules! make_place {
     ($name:ident) => {
         #[repr(C)]
@@ -37,3 +36,5 @@ macro_rules! make_place {
         }
     };
 }
+
+pub(super) use make_place;
