@@ -15,9 +15,10 @@
 //     std::mem::transmute::<TYPE, TYPE>(EXPR)
 macro_rules! extend_lifetime {
     ($($cast:tt)*) => {
-        extend_lifetime_impl!(() $($cast)*)
+        $crate::careful::extend_lifetime_impl!(() $($cast)*)
     };
 }
+pub(crate) use extend_lifetime;
 
 macro_rules! extend_lifetime_impl {
     (($($expr:tt)*) as $t:ty) => {{
@@ -25,6 +26,8 @@ macro_rules! extend_lifetime_impl {
         core::mem::transmute::<$t, $t>(expr)
     }};
     (($($expr:tt)*) $next:tt $($rest:tt)*) => {
-        extend_lifetime_impl!(($($expr)* $next) $($rest)*)
+        $crate::careful::extend_lifetime_impl!(($($expr)* $next) $($rest)*)
     };
 }
+
+pub(crate) use extend_lifetime_impl;

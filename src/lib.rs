@@ -163,38 +163,24 @@ extern crate alloc;
 #[doc(hidden)]
 pub use mini_internal::*;
 
-// These derives were renamed from MiniTrait -> Trait with the release of Rust
-// 1.30.0. Keep exposing the old names for backward compatibility but remove in
-// the next major version of Miniserde.
-#[doc(hidden)]
-pub use mini_internal::{Deserialize as MiniDeserialize, Serialize as MiniSerialize};
-
 // Not public API.
 #[doc(hidden)]
 #[path = "export.rs"]
 pub mod __private;
 
-#[macro_use]
 mod careful;
 
-mod place;
-use place::make_place;
+use careful::extend_lifetime;
 
 mod error;
-mod ignore;
 mod ptr;
 
-pub mod de;
 pub mod json;
 pub mod ser;
 
-#[doc(inline)]
-pub use crate::de::Deserialize;
 pub use crate::error::{Error, Result};
 #[doc(inline)]
 pub use crate::ser::Serialize;
-
-make_place!(Place);
 
 #[allow(non_camel_case_types)]
 struct private;

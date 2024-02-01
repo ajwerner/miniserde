@@ -1,9 +1,7 @@
-use crate::de::{Deserialize, Seq, Visitor};
 use crate::error::Result;
 use crate::json::{drop, Value};
 use crate::private;
 use crate::ser::{Fragment, Serialize};
-use crate::Place;
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::fmt::{self, Debug};
@@ -108,48 +106,5 @@ impl Debug for Array {
 impl Serialize for Array {
     fn begin(&self) -> Fragment {
         private::stream_slice(self)
-    }
-}
-
-impl Deserialize for Array {
-    fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
-        impl Visitor for Place<Array> {
-            fn seq(&mut self) -> Result<Box<dyn Seq + '_>> {
-                Ok(Box::new(ArrayBuilder {
-                    out: &mut self.out,
-                    array: Array::new(),
-                    element: None,
-                }))
-            }
-        }
-
-        struct ArrayBuilder<'a> {
-            out: &'a mut Option<Array>,
-            array: Array,
-            element: Option<Value>,
-        }
-
-        impl<'a> ArrayBuilder<'a> {
-            fn shift(&mut self) {
-                if let Some(e) = self.element.take() {
-                    self.array.push(e);
-                }
-            }
-        }
-
-        impl<'a> Seq for ArrayBuilder<'a> {
-            fn element(&mut self) -> Result<&mut dyn Visitor> {
-                self.shift();
-                Ok(Deserialize::begin(&mut self.element))
-            }
-
-            fn finish(&mut self) -> Result<()> {
-                self.shift();
-                *self.out = Some(mem::replace(&mut self.array, Array::new()));
-                Ok(())
-            }
-        }
-
-        Place::new(out)
     }
 }
