@@ -160,9 +160,6 @@
 
 extern crate alloc;
 
-#[doc(hidden)]
-pub use mini_internal::*;
-
 // Not public API.
 #[doc(hidden)]
 #[path = "export.rs"]
